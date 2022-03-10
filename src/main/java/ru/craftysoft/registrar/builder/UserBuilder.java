@@ -1,7 +1,7 @@
 package ru.craftysoft.registrar.builder;
 
-import ru.craftysoft.registrar.dto.User;
 import ru.craftysoft.registrar.rest.model.UsersCreateRequestData;
+import ru.tsc.crm.customer.model.jooq.tables.records.UsersRecord;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.constraints.NotNull;
@@ -11,8 +11,8 @@ import java.time.OffsetDateTime;
 public class UserBuilder {
 
     @NotNull
-    public User buildCreated(UsersCreateRequestData usersCreateRequestData) {
-        var user = new User();
+    public UsersRecord buildCreated(UsersCreateRequestData usersCreateRequestData) {
+        var user = new UsersRecord();
         user.setFirstName(usersCreateRequestData.getFirstName());
         user.setLastName(usersCreateRequestData.getLastName());
         user.setMiddleName(usersCreateRequestData.getMiddleName());
@@ -24,7 +24,7 @@ public class UserBuilder {
         user.setPassport(usersCreateRequestData.getPassport());
         user.setPassportExpiryDate(usersCreateRequestData.getPassportExpiryDate());
         var request = usersCreateRequestData.getRequest();
-        user.setVisaRequestCities(request.getCities());
+        user.setVisaRequestCities(request.getCities().toArray(new String[]{}));
         user.setVisaRequestDateFrom(request.getFrom());
         user.setVisaRequestDateTo(request.getTo());
         return user;
