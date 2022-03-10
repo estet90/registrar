@@ -165,13 +165,13 @@ components:
           type: string
         createdAt:
           type: string
-          format: date
+          format: date-time
         completedAt:
           type: string
-          format: date
+          format: date-time
         rejectedAt:
           type: string
-          format: date
+          format: date-time
         request:
           $ref: '#/components/schemas/VisaRequest'
         response:

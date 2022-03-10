@@ -3,6 +3,7 @@ package ru.craftysoft.registrar.logic;
 import io.smallrye.mutiny.Uni;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.craftysoft.registrar.builder.FilteredUserBuilder;
 import ru.craftysoft.registrar.rest.model.FilteredUser;
 import ru.craftysoft.registrar.rest.model.UsersFilterStatus;
 import ru.craftysoft.registrar.service.dao.UserDao;
@@ -16,14 +17,13 @@ import java.util.List;
 public class UserFilterOperation {
 
     private final UserDao userDao;
+    private final FilteredUserBuilder responseBuilder;
 
     public Uni<List<FilteredUser>> process(UsersFilterStatus status) {
         log.info("UserFilterOperation.process.in status={}", status.toString());
         return userDao.filter(status)
                 .map(users -> {
-                    var result = users.stream()
-                            .map(user -> new FilteredUser())
-                            .toList();
+                    var result = responseBuilder.build(users);
                     log.info("UserFilterOperation.process.out count={}", result.size());
                     return result;
                 })
