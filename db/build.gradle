@@ -1,96 +1,96 @@
-import liquibase.integration.commandline.LiquibaseCommandLine
-import org.jooq.codegen.GenerationTool
-import org.jooq.meta.jaxb.*
-
-buildscript {
-    dependencies {
-        classpath "org.liquibase:liquibase-core:4.4.1"
-        classpath "info.picocli:picocli:4.6.1"
-        classpath "org.jooq:jooq-codegen:3.16.4"
-        classpath "org.jooq:jooq-meta-extensions-liquibase:3.16.4"
-        classpath "org.postgresql:postgresql:42.3.3"
-        classpath "org.glassfish.jaxb:jaxb-runtime:3.0.2"
-    }
-}
-
-plugins {
-    id "java"
-    id "java-library"
-}
-
-dependencies {
-    api("org.jooq:jooq:3.16.4") {
-        exclude group: "com.sun.activation", module: "jakarta.activation"
-    }
-    api("org.postgresql:postgresql:42.3.3")
-    implementation "org.liquibase:liquibase-core:4.4.1"
-    implementation "org.jooq:jooq-codegen:3.16.4"
-    implementation "org.jooq:jooq-meta-extensions-liquibase:3.16.4"
-}
-
-def dbUrl = "jdbc:postgresql://localhost:5432/registrar"
-def dbUsername = "registrar"
-def dbPassword = "registrar"
-def schema = "registrar"
-
-task migrate() {
-    String[] args = [
-            "--driver=org.postgresql.Driver",
-            "--username=$dbUsername",
-            "--password=$dbPassword",
-            "--url=$dbUrl",
-            "--changeLogFile=/src/main/resources/db/migration/$schema-changelog.xml",
-            "--liquibaseSchemaName=$schema",
-            "--classpath=$projectDir/",
-            "migrate"
-    ]
-    def result = new LiquibaseCommandLine().execute(args)
-    if (result != 0) {
-        throw new RuntimeException("Ошибка при выполнении миграций. Код ошибки: ${result}")
-    }
-}
-
-def out = "build/jook/src/main/java"
-
-task generate() {
-    dependsOn migrate
-    def config = new Configuration()
-            .withGenerator(new Generator()
-                    .withDatabase(new Database()
-                            .withName("org.jooq.meta.postgres.PostgresDatabase")
-                            .withInputSchema("$schema"))
-                    .withTarget(new Target()
-                            .withDirectory(project.file(out).getAbsolutePath())
-                            .withPackageName("ru.tsc.crm.customer.model.jooq"))
-                    .withGenerate(new Generate()
-                            .withJavaTimeTypes(true))
-            )
-            .withJdbc(new Jdbc()
-                    .withDriver("org.postgresql.Driver")
-                    .withUrl(dbUrl)
-                    .withUser(dbUsername)
-                    .withPassword(dbPassword)
-            )
-    try {
-        GenerationTool.generate(config)
-    } catch (Exception e) {
-        e.printStackTrace()
-    }
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    getArchiveClassifier().set("sources")
-}
-
-compileJava() {
-    dependsOn generate
-    sourceSets.main.java {
-        srcDirs out
-    }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
+//import liquibase.integration.commandline.LiquibaseCommandLine
+//import org.jooq.codegen.GenerationTool
+//import org.jooq.meta.jaxb.*
+//
+//buildscript {
+//    dependencies {
+//        classpath "org.liquibase:liquibase-core:4.4.1"
+//        classpath "info.picocli:picocli:4.6.1"
+//        classpath "org.jooq:jooq-codegen:3.16.4"
+//        classpath "org.jooq:jooq-meta-extensions-liquibase:3.16.4"
+//        classpath "org.postgresql:postgresql:42.3.3"
+//        classpath "org.glassfish.jaxb:jaxb-runtime:3.0.2"
+//    }
+//}
+//
+//plugins {
+//    id "java"
+//    id "java-library"
+//}
+//
+//dependencies {
+//    api("org.jooq:jooq:3.16.4") {
+//        exclude group: "com.sun.activation", module: "jakarta.activation"
+//    }
+//    api("org.postgresql:postgresql:42.3.3")
+//    implementation "org.liquibase:liquibase-core:4.4.1"
+//    implementation "org.jooq:jooq-codegen:3.16.4"
+//    implementation "org.jooq:jooq-meta-extensions-liquibase:3.16.4"
+//}
+//
+//def dbUrl = "jdbc:postgresql://localhost:5432/registrar"
+//def dbUsername = "registrar"
+//def dbPassword = "registrar"
+//def schema = "registrar"
+//
+//task migrate() {
+//    String[] args = [
+//            "--driver=org.postgresql.Driver",
+//            "--username=$dbUsername",
+//            "--password=$dbPassword",
+//            "--url=$dbUrl",
+//            "--changeLogFile=/src/main/resources/db/migration/$schema-changelog.xml",
+//            "--liquibaseSchemaName=$schema",
+//            "--classpath=$projectDir/",
+//            "migrate"
+//    ]
+//    def result = new LiquibaseCommandLine().execute(args)
+//    if (result != 0) {
+//        throw new RuntimeException("Ошибка при выполнении миграций. Код ошибки: ${result}")
+//    }
+//}
+//
+//def out = "build/jook/src/main/java"
+//
+//task generate() {
+//    dependsOn migrate
+//    def config = new Configuration()
+//            .withGenerator(new Generator()
+//                    .withDatabase(new Database()
+//                            .withName("org.jooq.meta.postgres.PostgresDatabase")
+//                            .withInputSchema("$schema"))
+//                    .withTarget(new Target()
+//                            .withDirectory(project.file(out).getAbsolutePath())
+//                            .withPackageName("ru.tsc.crm.customer.model.jooq"))
+//                    .withGenerate(new Generate()
+//                            .withJavaTimeTypes(true))
+//            )
+//            .withJdbc(new Jdbc()
+//                    .withDriver("org.postgresql.Driver")
+//                    .withUrl(dbUrl)
+//                    .withUser(dbUsername)
+//                    .withPassword(dbPassword)
+//            )
+//    try {
+//        GenerationTool.generate(config)
+//    } catch (Exception e) {
+//        e.printStackTrace()
+//    }
+//}
+//
+//task sourcesJar(type: Jar) {
+//    from sourceSets.main.allJava
+//    getArchiveClassifier().set("sources")
+//}
+//
+//compileJava() {
+//    dependsOn generate
+//    sourceSets.main.java {
+//        srcDirs out
+//    }
+//}
+//
+//repositories {
+//    mavenLocal()
+//    mavenCentral()
+//}
