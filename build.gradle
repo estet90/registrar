@@ -54,3 +54,5 @@ quarkusBuild {
         additionalBuildArgs = "--allow-incomplete-classpath"
     }
 }
+
+task stage(dependsOn: ["build", "clean"])
