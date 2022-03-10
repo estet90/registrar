@@ -40,6 +40,7 @@ allprojects {
 apply plugin: "io.quarkus"
 
 dependencies {
+    implementation project(":db")
     implementation project(":registrar-api")
     implementation(
             "io.quarkus:quarkus-reactive-pg-client",

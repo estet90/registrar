@@ -3,16 +3,13 @@ quarkus:
     port: ${PORT:8080}
   datasource:
     reactive:
-      url: postgres://nvnoniqbrewdth:6f37a60c69291bde7089be34e716d203563b024a3da728cffb328a396e4ad298@ec2-3-216-221-31.compute-1.amazonaws.com:5432/dfdlpe7qj5f45e
+      trust-all: true
+      trust-certificate-pem: true
+      url: ${DATABASE_URL:postgres://localhost:5432/registrar}
       postgresql:
-        ssl-mode: require
-    username: nvnoniqbrewdth
-    password: 6f37a60c69291bde7089be34e716d203563b024a3da728cffb328a396e4ad298
-#  datasource:
-#    reactive:
-#      url: postgresql://localhost:5432/registrar
-#    username: registrar
-#    password: registrar
+        ssl-mode: verify-ca
+    username: ${DATABASE_USERNAME:registrar}
+    password: ${DATABASE_PASSWORD:registrar}
   log:
     level: INFO
     category:
