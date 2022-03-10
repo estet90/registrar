@@ -24,7 +24,7 @@ dependencies {
     api("org.postgresql:postgresql:42.3.3")
 }
 
-def dbUrl = System.getenv("DATABASE_URL") ?: "jdbc:postgresql://localhost:5432/registrar"
+def dbUrl = System.getenv("DATABASE_URL_JDBC") ?: "jdbc:postgresql://localhost:5432/registrar"
 def dbUsername = System.getenv("DATABASE_USERNAME") ?: "registrar"
 def dbPassword = System.getenv("DATABASE_PASSWORD") ?: "registrar"
 def schema = "registrar"
