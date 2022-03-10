@@ -1,4 +1,6 @@
 quarkus:
+  http:
+    port: ${PORT:8080}
   datasource:
     reactive:
       url: postgresql://localhost:5432/registrar
