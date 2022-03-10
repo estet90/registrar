@@ -1,0 +1,12 @@
+quarkus:
+  datasource:
+    reactive:
+      url: postgresql://localhost:5432/registrar
+    username: registrar
+    password: registrar
+  log:
+    level: INFO
+    category:
+      "ru.craftysoft":
+        min-level: TRACE
+        level: TRACE

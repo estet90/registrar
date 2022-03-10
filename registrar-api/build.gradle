@@ -1,0 +1,38 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+    id "org.openapi.generator" version "5.4.0"
+}
+
+def generatedFilesPath = "$projectDir/build/generated/sources"
+def generatedOpenapiFilesPath = "$generatedFilesPath/openapi"
+
+task generateRestApiWrap() {
+    def openapiInputFolder = "$projectDir/src/main/resources/openapi"
+    def openapiInputSpec = "$openapiInputFolder/registrar.yaml"
+    inputs.file("$openapiInputSpec")
+    outputs.dir("$generatedOpenapiFilesPath")
+    doLast {
+        task generateRestApi(type: GenerateTask) {
+            generatorName = "jaxrs-spec"
+            inputSpec = "$openapiInputSpec"
+            templateDir = "$openapiInputFolder/template"
+            outputDir = "$generatedOpenapiFilesPath"
+            modelPackage = "ru.craftysoft.registrar.rest.model"
+            apiPackage = "ru.craftysoft.registrar.controller"
+            generateModelTests = false
+            configOptions = [
+                    openApiNullable: "false",
+                    dateLibrary    : "java8",
+                    interfaceOnly  : "true",
+            ]
+        }
+        generateRestApi.doWork()
+    }
+}
+
+sourceSets.main.java.srcDirs("$generatedOpenapiFilesPath/src/gen/java", "$generatedFilesPath/annotationProcessor/java/main")
+
+tasks.withType(JavaCompile) {
+    dependsOn(generateRestApiWrap)
+}

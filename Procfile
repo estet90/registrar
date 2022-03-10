@@ -1,0 +1,1 @@
+web: ./build/quarkus-app/quarkus-run.jar

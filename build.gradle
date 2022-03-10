@@ -1,0 +1,56 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "io.quarkus:gradle-application-plugin:2.7.3.Final"
+    }
+}
+
+ext {
+    quarkusVersion = "2.7.3.Final"
+    lombokVersion = "1.18.22"
+    activationVersion = "1.1.1"
+    swaggerAnnotationsVersion = "1.6.5"
+}
+
+allprojects {
+    apply plugin: "java"
+
+    group "ru.craftysoft"
+    version "1.0.0"
+
+    dependencies {
+        implementation platform("io.quarkus:quarkus-bom:$quarkusVersion")
+        implementation(
+                "io.quarkus:quarkus-resteasy-jackson",
+                "io.quarkus:quarkus-resteasy-mutiny",
+                "io.quarkus:quarkus-hibernate-validator",
+
+                "com.google.code.findbugs:jsr305",
+                "io.swagger:swagger-annotations:$swaggerAnnotationsVersion",
+        )
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: "io.quarkus"
+
+dependencies {
+    implementation project(":registrar-api")
+    implementation(
+            "io.quarkus:quarkus-reactive-pg-client",
+            "io.quarkus:quarkus-config-yaml",
+    )
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+}
+
+quarkusBuild {
+    nativeArgs {
+        additionalBuildArgs = "--allow-incomplete-classpath"
+    }
+}

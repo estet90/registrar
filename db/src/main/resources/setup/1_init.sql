@@ -1,0 +1,19 @@
+DROP DATABASE IF EXISTS registrar;
+DROP USER IF EXISTS registrar;
+
+CREATE USER registrar WITH
+    LOGIN
+    NOSUPERUSER
+    NOCREATEDB
+    CREATEROLE
+    INHERIT
+    NOREPLICATION
+    CONNECTION LIMIT -1
+    PASSWORD 'registrar';
+
+CREATE DATABASE registrar
+    WITH OWNER = registrar
+    ENCODING = 'UTF8'
+    CONNECTION LIMIT = -1;
+
+GRANT CONNECT ON DATABASE registrar TO registrar;

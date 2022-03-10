@@ -1,0 +1,4 @@
+rootProject.name = 'registrar'
+include 'registrar-api'
+include 'db'
+
