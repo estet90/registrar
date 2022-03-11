@@ -4,11 +4,11 @@ import org.jooq.meta.jaxb.*
 
 buildscript {
     dependencies {
-        classpath "org.liquibase:liquibase-core:4.8.0"
-        classpath "info.picocli:picocli:4.6.1"
-        classpath "org.jooq:jooq-codegen:3.16.4"
-        classpath "org.postgresql:postgresql:42.3.3"
-        classpath "org.glassfish.jaxb:jaxb-runtime:3.0.2"
+        classpath "org.liquibase:liquibase-core:$liquibaseVersion"
+        classpath "info.picocli:picocli:$picocliVersion"
+        classpath "org.jooq:jooq-codegen:$jooqVersion"
+        classpath "org.postgresql:postgresql:$postgresqlVersion"
+        classpath "org.glassfish.jaxb:jaxb-runtime:$jaxbVersion"
     }
 }
 
@@ -18,10 +18,10 @@ plugins {
 }
 
 dependencies {
-    api("org.jooq:jooq:3.16.4") {
+    api("org.jooq:jooq:$jooqVersion") {
         exclude group: "com.sun.activation", module: "jakarta.activation"
     }
-    api("org.postgresql:postgresql:42.3.3")
+    api("org.postgresql:postgresql:$postgresqlVersion")
 }
 
 def dbUrl = System.getenv("DATABASE_URL_JDBC") ?: "jdbc:postgresql://localhost:5432/registrar"

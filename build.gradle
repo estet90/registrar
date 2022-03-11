@@ -10,8 +10,13 @@ buildscript {
 ext {
     quarkusVersion = "2.7.3.Final"
     lombokVersion = "1.18.22"
-    activationVersion = "1.1.1"
     swaggerAnnotationsVersion = "1.6.5"
+
+    liquibaseVersion = "4.8.0"
+    picocliVersion = "4.6.3"
+    jooqVersion = "3.16.4"
+    postgresqlVersion = "42.3.3"
+    jaxbVersion = "3.0.2"
 }
 
 allprojects {
@@ -20,16 +25,18 @@ allprojects {
     group "ru.craftysoft"
     version "1.0.0"
 
-    dependencies {
-        implementation platform("io.quarkus:quarkus-bom:$quarkusVersion")
-        implementation(
-                "io.quarkus:quarkus-resteasy-jackson",
-                "io.quarkus:quarkus-resteasy-mutiny",
-                "io.quarkus:quarkus-hibernate-validator",
+    if (project.name != "db") {
+        dependencies {
+            implementation platform("io.quarkus:quarkus-bom:$quarkusVersion")
+            implementation(
+                    "io.quarkus:quarkus-resteasy-jackson",
+                    "io.quarkus:quarkus-resteasy-mutiny",
+                    "io.quarkus:quarkus-hibernate-validator",
 
-                "com.google.code.findbugs:jsr305",
-                "io.swagger:swagger-annotations:$swaggerAnnotationsVersion",
-        )
+                    "com.google.code.findbugs:jsr305",
+                    "io.swagger:swagger-annotations:$swaggerAnnotationsVersion",
+            )
+        }
     }
 
     repositories {
