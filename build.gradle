@@ -45,6 +45,7 @@ dependencies {
     implementation(
             "io.quarkus:quarkus-reactive-pg-client",
             "io.quarkus:quarkus-config-yaml",
+            "io.quarkus:quarkus-smallrye-context-propagation",
     )
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")

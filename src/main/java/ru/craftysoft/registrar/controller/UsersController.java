@@ -2,6 +2,8 @@ package ru.craftysoft.registrar.controller;
 
 import io.smallrye.mutiny.Uni;
 import lombok.NoArgsConstructor;
+import org.jboss.resteasy.spi.HttpRequest;
+import org.slf4j.MDC;
 import ru.craftysoft.registrar.logic.UserCreateOperation;
 import ru.craftysoft.registrar.logic.UserFilterOperation;
 import ru.craftysoft.registrar.rest.model.UsersCreateRequestData;
@@ -12,6 +14,11 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Optional.ofNullable;
+import static ru.craftysoft.registrar.constant.MdcKey.OPERATION_NAME;
 
 @Path("/users")
 @NoArgsConstructor
@@ -32,9 +39,14 @@ public class UsersController implements UsersApi {
     @Override
     public Uni<Response> create(@Valid UsersCreateRequestData usersCreateRequestData,
                                 @Context org.jboss.resteasy.spi.HttpRequest request) {
-        return userCreateOperation.process(usersCreateRequestData)
-                .map(responseData -> Response.status(Response.Status.CREATED)
-                        .entity(responseData).build());
+        try {
+            mdcInit(request, "create");
+            return userCreateOperation.process(usersCreateRequestData)
+                    .map(responseData -> Response.status(Response.Status.CREATED)
+                            .entity(responseData).build());
+        } finally {
+            MDC.clear();
+        }
     }
 
     @GET
@@ -43,8 +55,29 @@ public class UsersController implements UsersApi {
     @Override
     public Uni<Response> filter(@QueryParam("status") @DefaultValue("all") UsersFilterStatus status,
                                 @Context org.jboss.resteasy.spi.HttpRequest request) {
-        return userFilterOperation.process(status)
-                .map(filteredUsers -> Response.ok(filteredUsers).build());
+        try {
+            mdcInit(request, "filter");
+            return userFilterOperation.process(status)
+                    .map(filteredUsers -> Response.ok(filteredUsers).build());
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    private void mdcInit(HttpRequest request, String operationName) {
+        ofNullable(request.getAttribute("mdc"))
+                .map(mdc -> {
+                    try {
+                        return (Map<String, String>) mdc;
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .ifPresentOrElse(mdc -> {
+                    var newMdc = new HashMap<>(mdc);
+                    newMdc.put(OPERATION_NAME, operationName);
+                    MDC.setContextMap(newMdc);
+                }, MDC::clear);
     }
 
 }
